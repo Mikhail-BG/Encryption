@@ -269,8 +269,9 @@ class CiphertextMessage(Message):
         return (bestShift, self.apply_shift(bestShift))
 
 
-temp = Message("ok + 538738974 nn")
-print(temp.apply_shift(3))
+def decrypt_story():
+    ciphertext = CiphertextMessage(get_story_string())
+    return ciphertext.decrypt_message()
 
 # Example test case (PlaintextMessage)
 plaintext = PlaintextMessage('hello', 2)
