@@ -1,5 +1,6 @@
 import string
 
+
 ### DO NOT MODIFY THIS FUNCTION ###
 def load_words(file_name):
     '''
@@ -22,6 +23,7 @@ def load_words(file_name):
     in_file.close()
     return word_list
 
+
 ### DO NOT MODIFY THIS FUNCTION ###
 def is_word(word_list, word):
     '''
@@ -43,6 +45,7 @@ def is_word(word_list, word):
     word = word.strip(" !@#$%^&*()-_+={}[]|\:;'<>?,./\"")
     return word in word_list
 
+
 ### DO NOT MODIFY THIS FUNCTION ###
 def get_story_string():
     """
@@ -53,7 +56,9 @@ def get_story_string():
     f.close()
     return story
 
+
 WORDLIST_FILENAME = 'words.txt'
+
 
 class Message(object):
     ### DO NOT MODIFY THIS METHOD ###
@@ -87,7 +92,7 @@ class Message(object):
         Returns: a COPY of self.valid_words
         '''
         return self.valid_words[:]
-        
+
     def build_shift_dict(self, shift):
         '''
         Creates a dictionary that can be used to apply a cipher to a letter.
@@ -150,6 +155,7 @@ class Message(object):
             else:
                 resultWord.extend(char)
         return ''.join(resultWord)
+
 
 class PlaintextMessage(Message):
     def __init__(self, text, shift):
@@ -225,7 +231,8 @@ class CiphertextMessage(Message):
             self.message_text (string, determined by input text)
             self.valid_words (list, determined using helper function load_words)
         '''
-        pass #delete this line and replace with your code here
+        self.message_text = text
+        self.valid_words = load_words(WORDLIST_FILENAME)
 
     def decrypt_message(self):
         '''
@@ -243,18 +250,34 @@ class CiphertextMessage(Message):
         Returns: a tuple of the best shift value used to decrypt the message
         and the decrypted message text using that shift value
         '''
-        pass #delete this line and replace with your code here
+
+        dictOfTries = {}
+
+        def numOfWords(wordList):
+            result = 0
+            for word in wordList:
+                if is_word(self.get_valid_words(), word):
+                    result += 1
+            return result
+
+        for iteration in range(0, 26, 1):
+            wordListActual = str(self.apply_shift(iteration)).split(' ')
+            dictOfTries[iteration] = numOfWords(wordListActual)
+
+        bestShift = sorted(dictOfTries, key=dictOfTries.get)[-1]
+
+        return (bestShift, self.apply_shift(bestShift))
 
 
 temp = Message("ok + 538738974 nn")
 print(temp.apply_shift(3))
 
-#Example test case (PlaintextMessage)
+# Example test case (PlaintextMessage)
 plaintext = PlaintextMessage('hello', 2)
 print('Expected Output: jgnnq')
 print('Actual Output:', plaintext.get_message_text_encrypted())
-    
-#Example test case (CiphertextMessage)
+
+# Example test case (CiphertextMessage)
 ciphertext = CiphertextMessage('jgnnq')
 print('Expected Output:', (24, 'hello'))
 print('Actual Output:', ciphertext.decrypt_message())
